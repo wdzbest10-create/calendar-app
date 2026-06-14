@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useAtom } from "jotai";
 
 import {
@@ -57,9 +57,12 @@ export function useCalendarData() {
     return groupEventsByDay(expandedEvents);
   }, [expandedEvents]);
 
-  const getEventsForDay = (date: Date): CalendarEvent[] => {
-    return eventsByDay.get(getDateKey(date)) ?? [];
-  };
+  const getEventsForDay = useCallback(
+    (date: Date): CalendarEvent[] => {
+      return eventsByDay.get(getDateKey(date)) ?? [];
+    },
+    [eventsByDay],
+  );
 
   return {
     events: expandedEvents,

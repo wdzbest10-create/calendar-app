@@ -14,15 +14,12 @@ export default function MonthView() {
   const [currentDate, setCurrentDate] = useAtom(currentDateAtom);
   const [, setView] = useAtom(viewAtom);
 
-  const { getEventsForDay } = useCalendarData();
+  const { getEventsForDay, setEvents } = useCalendarData();
+  const { handleEditEvent } = useCalendarInteraction({ setEvents });
 
   const today = new Date();
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
-
-  const { setEvents } = useCalendarData();
-
-  const { handleEditEvent } = useCalendarInteraction({ setEvents });
 
   // -----------------------------
   // 🟡 42マス生成

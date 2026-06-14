@@ -1,5 +1,6 @@
 import { CalendarEvent } from "@/features/calendar/types/calendar";
 import { getDateKey } from "@/features/calendar/lib/date";
+import { createModifiedEvent } from "@/features/calendar/lib/eventModify";
 
 /* ==================================================
    繰り返しインスタンスの元の日付を取得
@@ -12,23 +13,6 @@ function getOriginalDateKey(event: CalendarEvent) {
 
   const originalDateIso = event.id.replace(`${event.originalId}_`, "");
   return getDateKey(new Date(originalDateIso));
-}
-
-/* ==================================================
-   例外編集用のデータを作成
-================================================== */
-function createModifiedEvent(event: CalendarEvent): Partial<CalendarEvent> {
-  return {
-    title: event.title,
-    start: event.start,
-    end: event.end,
-    date: getDateKey(event.start),
-    location: event.location,
-    description: event.description,
-    category: event.category,
-    color: event.color,
-    allDay: event.allDay,
-  };
 }
 
 /* ==================================================

@@ -1,5 +1,6 @@
 import { CalendarEvent } from "@/features/calendar/types/calendar";
 import { getDateKey } from "@/features/calendar/lib/date";
+import { createModifiedEvent } from "@/features/calendar/lib/eventModify";
 
 type SaveEventParams = {
   events: CalendarEvent[];
@@ -19,23 +20,6 @@ function isRepeatRuleChanged(
     currentEvent?.repeat?.type !== newEvent.repeat?.type ||
     currentEvent?.repeat?.interval !== newEvent.repeat?.interval
   );
-}
-
-/* ==================================================
-   例外編集用のデータを作成
-================================================== */
-function createModifiedEvent(event: CalendarEvent): Partial<CalendarEvent> {
-  return {
-    title: event.title,
-    start: event.start,
-    end: event.end,
-    date: event.date,
-    location: event.location,
-    description: event.description,
-    category: event.category,
-    color: event.color,
-    allDay: event.allDay,
-  };
 }
 
 /* ==================================================

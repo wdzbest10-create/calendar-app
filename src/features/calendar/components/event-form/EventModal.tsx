@@ -22,6 +22,9 @@ export default function EventModal({ clearResizePreview = () => {} }: Props) {
     onSubmit,
     handleClose,
     handleDelete,
+    deleteConfirmType,
+    confirmDelete,
+    cancelDelete,
   } = useEventModal({ clearResizePreview });
 
   if (!mode) return null;
@@ -53,8 +56,11 @@ export default function EventModal({ clearResizePreview = () => {} }: Props) {
 
         {/* カテゴリ */}
         <EventCategoryField register={register} />
+        {/* 繰り返し */}
         <EventRepeatField register={register} repeatType={repeatType} />
+        {/* 詳細 */}
         <EventDetailFields register={register} errors={errors} />
+        {/* 色 */}
         <EventColorField selectedColor={selectedColor} setValue={setValue} />
 
         {/* ボタン */}
@@ -64,6 +70,68 @@ export default function EventModal({ clearResizePreview = () => {} }: Props) {
           onDelete={handleDelete}
         />
       </form>
+
+      {deleteConfirmType === "normal" && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <div className="w-80 rounded-xl bg-white p-5 shadow-xl space-y-4">
+            <div className="font-bold">イベントを削除しますか？</div>
+
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                onClick={cancelDelete}
+                className="px-3 py-1 border rounded"
+              >
+                キャンセル
+              </button>
+
+              <button
+                type="button"
+                onClick={() => confirmDelete()}
+                className="px-3 py-1 bg-red-500 text-white rounded"
+              >
+                削除
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {deleteConfirmType === "repeat" && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+          <div className="w-80 rounded-xl bg-white p-5 shadow-xl space-y-4">
+            <div className="font-bold">繰り返しイベントを削除しますか？</div>
+
+            <div className="space-y-2">
+              <button
+                type="button"
+                onClick={() => confirmDelete("one")}
+                className="w-full px-3 py-2 border rounded text-left hover:bg-gray-100"
+              >
+                このイベントのみ削除
+              </button>
+
+              <button
+                type="button"
+                onClick={() => confirmDelete("future")}
+                className="w-full px-3 py-2 border rounded text-left hover:bg-gray-100"
+              >
+                この日以降すべて削除
+              </button>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                type="button"
+                onClick={cancelDelete}
+                className="px-3 py-1 border rounded"
+              >
+                キャンセル
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

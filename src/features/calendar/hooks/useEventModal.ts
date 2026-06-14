@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -33,6 +33,9 @@ export function useEventModal({ clearResizePreview = () => {} }: Params = {}) {
   const [mode, setMode] = useAtom(modeAtom);
   const [draftEvent] = useAtom(draftEventAtom);
   const { setEvents } = useEvents();
+  const [deleteConfirmType, setDeleteConfirmType] = useState<
+    "normal" | "repeat" | null
+  >(null);
 
   const {
     register,
@@ -81,35 +84,31 @@ export function useEventModal({ clearResizePreview = () => {} }: Params = {}) {
   const handleDelete = () => {
     if (!event) return;
 
-    if (!event.originalId) {
-      if (!confirm("削除しますか？")) return;
-
-      setEvents((prev) =>
-        deleteCalendarEvent({
-          events: prev,
-          currentEvent: event,
-        }),
-      );
-
-      handleClose();
+    if (event.originalId) {
+      setDeleteConfirmType("repeat");
       return;
     }
 
-    const choice = window.prompt(
-      "繰り返しイベントです。\n\n1: このイベントのみ削除\n2: この日以降すべて削除\n\n1 または 2 を入力してください",
-    );
+    setDeleteConfirmType("normal");
+  };
 
-    if (choice !== "1" && choice !== "2") return;
+  const confirmDelete = (choice?: "one" | "future") => {
+    if (!event) return;
 
     setEvents((prev) =>
       deleteCalendarEvent({
         events: prev,
         currentEvent: event,
-        choice: choice === "1" ? "one" : "future",
+        choice,
       }),
     );
 
+    setDeleteConfirmType(null);
     handleClose();
+  };
+
+  const cancelDelete = () => {
+    setDeleteConfirmType(null);
   };
 
   const selectedColor = useWatch({
@@ -133,5 +132,8 @@ export function useEventModal({ clearResizePreview = () => {} }: Params = {}) {
     onSubmit,
     handleClose,
     handleDelete,
+    deleteConfirmType,
+    confirmDelete,
+    cancelDelete,
   };
 }
